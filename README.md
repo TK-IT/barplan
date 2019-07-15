@@ -1,0 +1,2 @@
+# barplan
+Barplans generator
