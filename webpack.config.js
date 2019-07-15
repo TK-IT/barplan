@@ -35,7 +35,7 @@ module.exports = {
 						}
 					},
 					{
-						loader: "sass-loader" // compiles Sass to CSS
+						loader: "sass-loader" //</span> compiles Sass to CSS
 					}
 				]
 			}
