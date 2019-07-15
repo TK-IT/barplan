@@ -2,3 +2,14 @@
     color: red;
     font-weight: bold;
 }
+.editor {
+    display: flex;
+    flex: row;
+    & > div {
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+}
+.personInFocus {
+    color: green;
+}
