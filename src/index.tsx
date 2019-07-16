@@ -190,9 +190,9 @@ class ControlPanel extends React.Component<{}, {}> {
       if (app.isFocusedPersonInSlot(app.focusPlanCoordinates[0], app.focusPlanCoordinates[1])) {
         return (
           <button
-            onClick={_e => this.addPersonInFocusToSlot()}
+            onClick={_e => this.removePersonInFocusFromSlot()}
           >
-            Tilføj til vagt
+            Fjern fra vagt
           </button>
         );
       } else {
@@ -210,6 +210,19 @@ class ControlPanel extends React.Component<{}, {}> {
   addPersonInFocusToSlot(){
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
       app.personsWorkslots[app.focusPersonIndex].push(app.focusPlanCoordinates);
+    }
+  }
+
+  removePersonInFocusFromSlot() {
+    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
+      var focusCoord: number[] = app.focusPlanCoordinates;
+      var focusIndex: number = app.focusPersonIndex;
+      app.personsWorkslots[app.focusPersonIndex].forEach( (coord, i) => {
+          if (coord[0] === focusCoord[0] && coord[1] === focusCoord[1]) {
+            app.personsWorkslots[focusIndex].splice(i,1);
+          }
+        }
+      )
     }
   }
 }
