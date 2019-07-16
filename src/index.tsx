@@ -118,9 +118,10 @@ class Plan extends React.Component<{}, {}> {
               <td>{time}</td>
               {app.locationNames.map((_loc, l) => (
                 <td
-                  onClick={() => app.focusPlanCoordinates = [t,l]}
+                  onClick={() => (app.focusPlanCoordinates = [t, l])}
                   className={
-                    this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
+                    //this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
+                    this.getSlotClassName(t, l)
                   }
                 >
                   {this.listWorkers(t, l)}
@@ -133,16 +134,19 @@ class Plan extends React.Component<{}, {}> {
     );
   }
 
-  focusedPersonInSlot(t: number, l: number) {
-    var inSlot = false;
-    if (app.focusPersonIndex != null) {
-      app.personsWorkslots[app.focusPersonIndex].forEach(slot => {
-        if (slot[0] === t && slot[1] === l) {
-          inSlot = true;
-        }
-      });
+  getSlotClassName(t: number, l: number) {
+    var className = "";
+    if (app.isFocusedPersonInSlot(t, l)) {
+      className += styles.personInFocus;
     }
-    return inSlot;
+    if (app.focusPlanCoordinates != null) {
+      if (
+        app.focusPlanCoordinates[0] === t &&
+        app.focusPlanCoordinates[1] === l
+      )
+        className += " " + styles.timeSlotInFocus;
+    }
+    return className.trimLeft();
   }
 
   listWorkers(t: number, l: number) {
@@ -161,9 +165,34 @@ class Plan extends React.Component<{}, {}> {
 @observer
 class ControlPanel extends React.Component<{}, {}> {
   render() {
-    return (
-      "hej"
-    );
+    if (app.focusPlanCoordinates != null) {
+      return (
+        <div>
+          <b>
+            {app.locationNames[app.focusPlanCoordinates[1]] +
+              " kl. " +
+              app.timeNames[app.focusPlanCoordinates[0]]}
+          </b>
+          {this.addOrRemoveButton()}
+        </div>
+      );
+    } else {
+      return "";
+    }
+  }
+
+  addOrRemoveButton() {
+    if (app.focusPlanCoordinates != null) {
+      if (app.isFocusedPersonInSlot(app.focusPlanCoordinates[0], app.focusPlanCoordinates[1])) {
+        return (
+          '' // Her skal være en add knap
+        );
+      } else {
+        return (
+          '' // Her skal være en remove knap
+        );
+      }
+    }
   }
 }
 
