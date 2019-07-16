@@ -66,6 +66,7 @@ class AppComponent extends React.Component<{}, {}> {
     app.persons = rows
       .map(row => row.split("\t")[0].trim())
       .filter(name => name != "");
+    //app.persons.forEach put element into personsWorkslot
   }
 }
 
@@ -108,17 +109,33 @@ class Plan extends React.Component<{}, {}> {
               <td>{loc}</td>
             ))}
           </tr>
-          {app.timeNames.map(time => (
+          {app.timeNames.map( (time, t) => (
             <tr>
               <td>{time}</td>
-              {app.locationNames.map(_loc => (
-                <td></td>
+              {app.locationNames.map( (_loc, l) => (
+                <td>
+                  {//app.persons.map(person => (<p>{person}</p>))
+                  }
+                  {this.listWorkers(t,l)}
+                </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
     );
+  }
+
+  listWorkers(t: number, l: number) {
+    var workersList = "";
+    app.persons.forEach((person, i) => {
+      app.personsWorkslots[i].forEach( slot => {
+        if (slot[0] === t && slot[1] === l) {
+          workersList += " "+person+" ";
+        } 
+      })
+    });
+    return workersList;
   }
 }
 
