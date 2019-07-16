@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { observable } from 'mobx';
 
 class App {
   @observable
@@ -17,6 +17,8 @@ class App {
   focusPersonIndex: number | null = null;
   @observable
   personsWorkslots = [[[0, 0]]];
+  @observable
+  focusPlanCoordinates: (number | null)[] = [null,null];
 }
 
 export const app = new App();

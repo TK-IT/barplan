@@ -1,10 +1,10 @@
-import { action } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import styles from "./index.scss";
+import { app } from './app';
+import styles from './index.scss';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -45,6 +45,9 @@ class AppComponent extends React.Component<{}, {}> {
           </div>
           <div>
             <Plan />
+          </div>
+          <div>
+            <ControlPanel />
           </div>
         </div>
       </>
@@ -115,8 +118,9 @@ class Plan extends React.Component<{}, {}> {
               <td>{time}</td>
               {app.locationNames.map((_loc, l) => (
                 <td
+                  onClick={() => app.focusPlanCoordinates = [t,l]}
                   className={
-                    this.focusedPersonInSlot(t, l) ? styles.personInFocus : ""
+                    this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
                   }
                 >
                   {this.listWorkers(t, l)}
@@ -151,6 +155,15 @@ class Plan extends React.Component<{}, {}> {
       });
     });
     return workersList;
+  }
+}
+
+@observer
+class ControlPanel extends React.Component<{}, {}> {
+  render() {
+    return (
+      "hej"
+    );
   }
 }
 
