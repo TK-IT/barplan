@@ -1,10 +1,10 @@
-import { action } from 'mobx';
-import { observer } from 'mobx-react';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { action } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { app } from './app';
-import styles from './index.scss';
+import { app } from "./app";
+import styles from "./index.scss";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -66,7 +66,8 @@ class AppComponent extends React.Component<{}, {}> {
     app.persons = rows
       .map(row => row.split("\t")[0].trim())
       .filter(name => name != "");
-    //app.persons.forEach put element into personsWorkslot
+    app.personsWorkslots = [];
+    app.persons.forEach(_person => app.personsWorkslots.push([]));
   }
 }
 
@@ -109,14 +110,16 @@ class Plan extends React.Component<{}, {}> {
               <td>{loc}</td>
             ))}
           </tr>
-          {app.timeNames.map( (time, t) => (
+          {app.timeNames.map((time, t) => (
             <tr>
               <td>{time}</td>
-              {app.locationNames.map( (_loc, l) => (
-                <td>
-                  {//app.persons.map(person => (<p>{person}</p>))
+              {app.locationNames.map((_loc, l) => (
+                <td
+                  className={
+                    this.focusedPersonInSlot(t, l) ? styles.personInFocus : ""
                   }
-                  {this.listWorkers(t,l)}
+                >
+                  {this.listWorkers(t, l)}
                 </td>
               ))}
             </tr>
@@ -126,14 +129,26 @@ class Plan extends React.Component<{}, {}> {
     );
   }
 
+  focusedPersonInSlot(t: number, l: number) {
+    var inSlot = false;
+    if (app.focusPersonIndex != null) {
+      app.personsWorkslots[app.focusPersonIndex].forEach(slot => {
+        if (slot[0] === t && slot[1] === l) {
+          inSlot = true;
+        }
+      });
+    }
+    return inSlot;
+  }
+
   listWorkers(t: number, l: number) {
     var workersList = "";
     app.persons.forEach((person, i) => {
-      app.personsWorkslots[i].forEach( slot => {
+      app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
-          workersList += " "+person+" ";
-        } 
-      })
+          workersList += " " + person + " ";
+        }
+      });
     });
     return workersList;
   }
