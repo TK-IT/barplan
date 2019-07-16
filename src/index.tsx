@@ -89,14 +89,26 @@ class PersonList extends React.Component<{}, {}> {
               >
                 {name}
               </td>
-              {app.locationNames.map(_loc => (
-                <td>0</td>
+              {app.locationNames.map( (_loc, l) => (
+                <td>
+                  {this.numberOfTimeslotsOnLocation(l,i)}
+                </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
     );
+  }
+
+  numberOfTimeslotsOnLocation(l: number, i: number) {
+    var c = 0;
+    app.personsWorkslots[i].forEach( coord => {
+      if (coord[1] === l) {
+        c = c + 1;
+      }
+    })
+    return c
   }
 }
 
@@ -206,12 +218,14 @@ class ControlPanel extends React.Component<{}, {}> {
     }
   }
 
+  @action
   addPersonInFocusToSlot(){
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
       app.personsWorkslots[app.focusPersonIndex].push(app.focusPlanCoordinates);
     }
   }
 
+  @action
   removePersonInFocusFromSlot() {
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
       var focusCoord: number[] = app.focusPlanCoordinates;
