@@ -162,14 +162,19 @@ class Plan extends React.Component<{}, {}> {
 
   listWorkers(t: number, l: number) {
     var workersList = "";
+    var supervisor = "";
     app.persons.forEach((person, i) => {
       app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
-          workersList += " " + person + " ";
+          if(slot[2] === true) {
+            supervisor = person;
+          } else{
+            workersList += " " + person + " ";
+          }
         }
       });
     });
-    return workersList;
+    return (<><b>{supervisor}</b>{workersList}</>);
   }
 }
 
@@ -189,10 +194,68 @@ class ControlPanel extends React.Component<{}, {}> {
         <div>
           {this.addOrRemoveButton()}
         </div>
+        <div>
+          {this.supervisorButton()}
+        </div>
         </>
       );
     } else {
       return "";
+    }
+  }
+
+  supervisorButton() {
+    var button = <></>
+    if (app.focusPlanCoordinates != null) {
+      var focusCord = app.focusPlanCoordinates;
+      app.persons.forEach( (_person, i) => {
+        app.personsWorkslots[i].forEach(slot => {
+          if (slot[0] === focusCord[0] && slot[1] === focusCord[1] && app.focusPersonIndex == i) {
+            if(slot[2] === false) {
+              button = (
+                <button
+                  onClick={_e => this.addAsSupervisor(i)}
+                >
+                  Gør til ansvarlig
+                </button>
+              );
+            } else if (slot[2] === true) {
+              button = (
+                <button
+                  onClick={_e => this.removeAsSupervisor(i)}
+                >
+                  Gør uansvarlig
+                </button>
+              );
+            }
+          }
+        });
+      });
+    }
+    return button;
+  }
+
+  @action
+  removeAsSupervisor(i: number): void {
+    if (app.focusPlanCoordinates != null) {
+      var focusCord = app.focusPlanCoordinates;
+      app.personsWorkslots[i].forEach( slot => {
+        if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
+          slot[2] = true;
+        }
+      });
+    }
+  }
+
+  @action
+  addAsSupervisor(i: number): void {
+    if (app.focusPlanCoordinates != null) {
+      var focusCord = app.focusPlanCoordinates;
+      app.personsWorkslots[i].forEach( slot => {
+        if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
+          slot[2] = false;
+        }
+      });
     }
   }
 
@@ -214,16 +277,16 @@ class ControlPanel extends React.Component<{}, {}> {
             Tilføj til vagt
           </button>
         );
-      } else {
-        return "";
-      }
+      } 
     }
+    return "";
   }
 
   @action
   addPersonInFocusToSlot(){
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
-      app.personsWorkslots[app.focusPersonIndex].push(app.focusPlanCoordinates);
+      var workslot = [app.focusPlanCoordinates[0], app.focusPlanCoordinates[1], false]
+      app.personsWorkslots[app.focusPersonIndex].push(workslot);
     }
   }
 
