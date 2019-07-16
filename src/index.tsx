@@ -206,7 +206,7 @@ class ControlPanel extends React.Component<{}, {}> {
             Fjern fra vagt
           </button>
         );
-      } else {
+      } else if (app.focusPersonIndex != null) {
         return (
           <button
             onClick={_e => this.addPersonInFocusToSlot()}
@@ -214,6 +214,8 @@ class ControlPanel extends React.Component<{}, {}> {
             Tilføj til vagt
           </button>
         );
+      } else {
+        return "";
       }
     }
   }
