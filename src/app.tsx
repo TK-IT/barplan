@@ -16,7 +16,8 @@ class App {
   @observable
   focusPersonIndex: number | null = null;
   @observable
-  personsWorkslots = [[[0, 0]]];
+  //personsWorksslots = new Map()
+  personsWorkslots: number[][][] = [[[]]];
   @observable
   focusPlanCoordinates: number[] | null = null;
 
