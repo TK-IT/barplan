@@ -1,15 +1,15 @@
 .TheName {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 .editor {
-    display: flex;
-    flex: row;
-    & > div {
-        flex-grow: 1;
-        flex-basis: 0;
-    }
+  display: flex;
+  flex: row;
+  & > div {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
 }
 .personInFocus {
-    color: green;
+  color: green;
 }
