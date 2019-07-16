@@ -1,28 +1,10 @@
-import { action, observable } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import styles from "./index.scss";
-
-class App {
-  @observable
-  navn = "";
-  @observable
-  planTemplateString = "";
-  @observable
-  locationNames = ["Drinksbar"];
-  @observable
-  timeNames = ["21-22"];
-  @observable
-  personsString = "SEKR";
-  @observable
-  persons = ["SEKR"];
-  @observable
-  focusPersonIndex: number | null = null;
-}
-
-export const app = new App();
+import { app } from './app';
+import styles from './index.scss';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
