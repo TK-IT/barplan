@@ -167,14 +167,18 @@ class ControlPanel extends React.Component<{}, {}> {
   render() {
     if (app.focusPlanCoordinates != null) {
       return (
+        <>
         <div>
           <b>
             {app.locationNames[app.focusPlanCoordinates[1]] +
               " kl. " +
               app.timeNames[app.focusPlanCoordinates[0]]}
           </b>
+        </div>
+        <div>
           {this.addOrRemoveButton()}
         </div>
+        </>
       );
     } else {
       return "";
@@ -185,15 +189,30 @@ class ControlPanel extends React.Component<{}, {}> {
     if (app.focusPlanCoordinates != null) {
       if (app.isFocusedPersonInSlot(app.focusPlanCoordinates[0], app.focusPlanCoordinates[1])) {
         return (
-          '' // Her skal være en add knap
+          <button
+            onClick={_e => this.addPersonInFocusToSlot()}
+          >
+            Tilføj til vagt
+          </button>
         );
       } else {
         return (
-          '' // Her skal være en remove knap
+          <button
+            onClick={_e => this.addPersonInFocusToSlot()}
+          >
+            Tilføj til vagt
+          </button>
         );
       }
     }
   }
+
+  addPersonInFocusToSlot(){
+    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
+      app.personsWorkslots[app.focusPersonIndex].push(app.focusPlanCoordinates);
+    }
+  }
 }
+
 
 ReactDOM.render(<AppComponent />, document.getElementById("root"));
