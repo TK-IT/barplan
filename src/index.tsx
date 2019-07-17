@@ -11,18 +11,6 @@ class AppComponent extends React.Component<{}, {}> {
   render() {
     return (
       <>
-        <div>
-          <b>
-            {" "}
-            Hello <span className={styles.TheName}>{app.navn}</span>{" "}
-          </b>
-          <input
-            value={app.navn}
-            onChange={e => {
-              app.navn = e.target.value;
-            }}
-          />
-        </div>
         <b>Plan</b>
         <div>
           <textarea

@@ -2,8 +2,6 @@ import { observable } from 'mobx';
 
 class App {
   @observable
-  navn = "";
-  @observable
   planTemplateString = "";
   @observable
   locationNames = ["Drinksbar"];
