@@ -1,11 +1,11 @@
-import { action } from 'mobx';
-import { observer } from 'mobx-react';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { action } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { app } from './app';
-import styles from './index.scss';
-import { classNames } from './util';
+import { app } from "./app";
+import styles from "./index.scss";
+import { classNames } from "./util";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -78,10 +78,8 @@ class PersonList extends React.Component<{}, {}> {
               >
                 {name}
               </td>
-              {app.locationNames.map( (_loc, l) => (
-                <td>
-                  {this.numberOfTimeslotsOnLocation(l,i)}
-                </td>
+              {app.locationNames.map((_loc, l) => (
+                <td>{this.numberOfTimeslotsOnLocation(l, i)}</td>
               ))}
             </tr>
           ))}
@@ -91,9 +89,7 @@ class PersonList extends React.Component<{}, {}> {
   }
 
   numberOfTimeslotsOnLocation(l: number, i: number) {
-    return app.personsWorkslots[i].filter(
-      coord => coord[1] === l
-    ).length;
+    return app.personsWorkslots[i].filter(coord => coord[1] === l).length;
   }
 }
 
@@ -119,7 +115,7 @@ class Plan extends React.Component<{}, {}> {
                     //this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
                     classNames({
                       [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
-                      [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l),
+                      [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l)
                     })
                   }
                 >
@@ -147,7 +143,11 @@ class Plan extends React.Component<{}, {}> {
         }
       });
     });
-    return (<><b>{supervisor}</b> {workersList.join(" ")}</>);
+    return (
+      <>
+        <b>{supervisor}</b> {workersList.join(" ")}
+      </>
+    );
   }
 }
 
@@ -160,17 +160,13 @@ class ControlPanel extends React.Component<{}, {}> {
     const [t, l] = app.focusPlanCoordinates;
     return (
       <>
-      <div>
-        <b>
-          {app.locationNames[t]} kl. {app.timeNames[l]}
-        </b>
-      </div>
-      <div>
-        {this.addOrRemoveButton()}
-      </div>
-      <div>
-        {this.supervisorButton()}
-      </div>
+        <div>
+          <b>
+            {app.locationNames[t]} kl. {app.timeNames[l]}
+          </b>
+        </div>
+        <div>{this.addOrRemoveButton()}</div>
+        <div>{this.supervisorButton()}</div>
       </>
     );
   }
@@ -181,22 +177,18 @@ class ControlPanel extends React.Component<{}, {}> {
     }
     let button = <></>;
     const [t, l] = app.focusPlanCoordinates;
-    app.persons.forEach( (_person, i) => {
+    app.persons.forEach((_person, i) => {
       app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l && app.focusPersonIndex == i) {
-          if(slot[2] === false) {
+          if (slot[2] === false) {
             button = (
-              <button
-                onClick={_e => this.addAsSupervisor(i)}
-              >
+              <button onClick={_e => this.addAsSupervisor(i)}>
                 Gør til ansvarlig
               </button>
             );
           } else if (slot[2] === true) {
             button = (
-              <button
-                onClick={_e => this.removeAsSupervisor(i)}
-              >
+              <button onClick={_e => this.removeAsSupervisor(i)}>
                 Gør uansvarlig
               </button>
             );
@@ -211,7 +203,7 @@ class ControlPanel extends React.Component<{}, {}> {
   removeAsSupervisor(i: number): void {
     if (app.focusPlanCoordinates != null) {
       var focusCord = app.focusPlanCoordinates;
-      app.personsWorkslots[i].forEach( slot => {
+      app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
           slot[2] = true;
         }
@@ -223,7 +215,7 @@ class ControlPanel extends React.Component<{}, {}> {
   addAsSupervisor(i: number): void {
     if (app.focusPlanCoordinates != null) {
       var focusCord = app.focusPlanCoordinates;
-      app.personsWorkslots[i].forEach( slot => {
+      app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
           slot[2] = false;
         }
@@ -233,50 +225,51 @@ class ControlPanel extends React.Component<{}, {}> {
 
   addOrRemoveButton() {
     if (app.focusPlanCoordinates != null) {
-      if (app.isFocusedPersonInSlot(app.focusPlanCoordinates[0], app.focusPlanCoordinates[1])) {
+      if (
+        app.isFocusedPersonInSlot(
+          app.focusPlanCoordinates[0],
+          app.focusPlanCoordinates[1]
+        )
+      ) {
         return (
-          <button
-            onClick={_e => this.removePersonInFocusFromSlot()}
-          >
+          <button onClick={_e => this.removePersonInFocusFromSlot()}>
             Fjern fra vagt
           </button>
         );
       } else if (app.focusPersonIndex != null) {
         return (
-          <button
-            onClick={_e => this.addPersonInFocusToSlot()}
-          >
+          <button onClick={_e => this.addPersonInFocusToSlot()}>
             Tilføj til vagt
           </button>
         );
-      } 
+      }
     }
     return "";
   }
 
   @action
-  addPersonInFocusToSlot(){
-    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
-      app.personsWorkslots[app.focusPersonIndex].push(
-        [app.focusPlanCoordinates[0], app.focusPlanCoordinates[1], false]
-      );
+  addPersonInFocusToSlot() {
+    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null) {
+      app.personsWorkslots[app.focusPersonIndex].push([
+        app.focusPlanCoordinates[0],
+        app.focusPlanCoordinates[1],
+        false
+      ]);
     }
   }
 
   @action
   removePersonInFocusFromSlot() {
-    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
+    if (app.focusPersonIndex != null && app.focusPlanCoordinates != null) {
       var focusCoord: number[] = app.focusPlanCoordinates;
       var focusIndex: number = app.focusPersonIndex;
-      app.personsWorkslots[app.focusPersonIndex].forEach( (coord, i) => {
-          if (coord[0] === focusCoord[0] && coord[1] === focusCoord[1]) {
-            app.personsWorkslots[focusIndex].splice(i,1);
-          }
+      app.personsWorkslots[app.focusPersonIndex].forEach((coord, i) => {
+        if (coord[0] === focusCoord[0] && coord[1] === focusCoord[1]) {
+          app.personsWorkslots[focusIndex].splice(i, 1);
         }
-      )
+      });
     }
   }
 }
-
 
 ReactDOM.render(<AppComponent />, document.getElementById("root"));
