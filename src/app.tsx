@@ -35,7 +35,11 @@ class App {
     if (this.focusPersonIndex == null) {
       return false;
     }
-    return this.personWorkslotMap[this.focusPersonIndex][t][l] !== undefined;
+    const byLocation = this.personWorkslotMap[this.focusPersonIndex][t];
+    if (!byLocation) {
+      return false;
+    }
+    return byLocation[l] !== undefined;
   }
 
   isTimeSlotInFocus(t: number, l: number) {
