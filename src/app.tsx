@@ -19,15 +19,12 @@ class App {
   focusPlanCoordinates: number[] | null = null;
 
   isFocusedPersonInSlot(t: number, l: number) {
-    var inSlot = false;
-    if (this.focusPersonIndex != null) {
-      app.personsWorkslots[this.focusPersonIndex].forEach(slot => {
-        if (slot[0] === t && slot[1] === l) {
-          inSlot = true;
-        }
-      });
+    if (this.focusPersonIndex == null) {
+      return false;
     }
-    return inSlot;
+    return app.personsWorkslots[this.focusPersonIndex].some(
+      slot => slot[0] === t && slot[1] === l
+    );
   }
 }
 
