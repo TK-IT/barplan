@@ -1,11 +1,11 @@
-import { action } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import styles from "./index.scss";
-import { classNames } from "./util";
+import { app } from './app';
+import styles from './index.scss';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -201,11 +201,12 @@ class ControlPanel extends React.Component<{}, {}> {
 
   @action
   removeAsSupervisor(i: number): void {
-    if (app.focusPlanCoordinates != null) {
-      var focusCord = app.focusPlanCoordinates;
+    if (app.focusPlanCoordinates == null) {}
+    else {
+      const [t,l] = app.focusPlanCoordinates;
       app.personsWorkslots[i].forEach(slot => {
-        if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
-          slot[2] = true;
+        if (slot[0] === t && slot[1] === l) {
+          slot[2] = false;
         }
       });
     }
@@ -213,11 +214,12 @@ class ControlPanel extends React.Component<{}, {}> {
 
   @action
   addAsSupervisor(i: number): void {
-    if (app.focusPlanCoordinates != null) {
-      var focusCord = app.focusPlanCoordinates;
+    if (app.focusPlanCoordinates == null) {}
+    else {
+      const [t,l] = app.focusPlanCoordinates;
       app.personsWorkslots[i].forEach(slot => {
-        if (slot[0] === focusCord[0] && slot[1] === focusCord[1]) {
-          slot[2] = false;
+        if (slot[0] === t && slot[1] === l) {
+          slot[2] = true;
         }
       });
     }
@@ -261,10 +263,10 @@ class ControlPanel extends React.Component<{}, {}> {
   @action
   removePersonInFocusFromSlot() {
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null) {
-      var focusCoord: number[] = app.focusPlanCoordinates;
-      var focusIndex: number = app.focusPersonIndex;
+      const [t,l] = app.focusPlanCoordinates;
+      const focusIndex = app.focusPersonIndex;
       app.personsWorkslots[app.focusPersonIndex].forEach((coord, i) => {
-        if (coord[0] === focusCoord[0] && coord[1] === focusCoord[1]) {
+        if (coord[0] === t && coord[1] === l) {
           app.personsWorkslots[focusIndex].splice(i, 1);
         }
       });
