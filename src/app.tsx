@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { computed, observable } from 'mobx';
 
 class App {
   @observable
@@ -14,17 +14,28 @@ class App {
   @observable
   focusPersonIndex: number | null = null;
   @observable
-  personsWorkslots: (number | boolean)[][][] = [[[]]];
+  personsWorkslots: [number, number, boolean][][] = [[]];
   @observable
   focusPlanCoordinates: number[] | null = null;
 
-  isFocusedPersonInSlot(t: number, l: number) {
+  @computed get personWorkslotMap() {
+    const byPerson: {[timeIndex: number]: {[locationIndex: number]: {isSupervisor: boolean}}}[] = [];
+    for (let i = 0; i < this.persons.length; ++i) {
+      const workslotMap: {[t: number]: {[l: number]: {isSupervisor: boolean}}} = {};
+      for (const [t, l, isSupervisor] of this.personsWorkslots[i]) {
+        if (!workslotMap[t]) workslotMap[t] = {};
+        workslotMap[t][l] = {isSupervisor};
+      }
+      byPerson.push(workslotMap);
+    }
+    return byPerson;
+  }
+
+  isFocusedPersonInSlot(t: number, l: number): boolean {
     if (this.focusPersonIndex == null) {
       return false;
     }
-    return app.personsWorkslots[this.focusPersonIndex].some(
-      slot => slot[0] === t && slot[1] === l
-    );
+    return this.personWorkslotMap[this.focusPersonIndex][t][l] !== undefined;
   }
 
   isTimeSlotInFocus(t: number, l: number) {

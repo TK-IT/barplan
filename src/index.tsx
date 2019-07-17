@@ -257,8 +257,9 @@ class ControlPanel extends React.Component<{}, {}> {
   @action
   addPersonInFocusToSlot(){
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null){
-      var workslot = [app.focusPlanCoordinates[0], app.focusPlanCoordinates[1], false]
-      app.personsWorkslots[app.focusPersonIndex].push(workslot);
+      app.personsWorkslots[app.focusPersonIndex].push(
+        [app.focusPlanCoordinates[0], app.focusPlanCoordinates[1], false]
+      );
     }
   }
 
