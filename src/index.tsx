@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 
 import { app } from './app';
 import styles from './index.scss';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -90,13 +91,9 @@ class PersonList extends React.Component<{}, {}> {
   }
 
   numberOfTimeslotsOnLocation(l: number, i: number) {
-    var c = 0;
-    app.personsWorkslots[i].forEach( coord => {
-      if (coord[1] === l) {
-        c = c + 1;
-      }
-    })
-    return c
+    return app.personsWorkslots[i].filter(
+      coord => coord[1] === l
+    ).length;
   }
 }
 
@@ -120,7 +117,10 @@ class Plan extends React.Component<{}, {}> {
                   onClick={() => (app.focusPlanCoordinates = [t, l])}
                   className={
                     //this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
-                    this.getSlotClassName(t, l)
+                    classNames({
+                      [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
+                      [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l),
+                    })
                   }
                 >
                   {this.listWorkers(t, l)}
@@ -133,93 +133,77 @@ class Plan extends React.Component<{}, {}> {
     );
   }
 
-  getSlotClassName(t: number, l: number) {
-    var className = "";
-    if (app.isFocusedPersonInSlot(t, l)) {
-      className += styles.personInFocus;
-    }
-    if (app.focusPlanCoordinates != null) {
-      if (
-        app.focusPlanCoordinates[0] === t &&
-        app.focusPlanCoordinates[1] === l
-      )
-        className += " " + styles.timeSlotInFocus;
-    }
-    return className.trimLeft();
-  }
-
   listWorkers(t: number, l: number) {
-    var workersList = "";
-    var supervisor = "";
+    const workersList: string[] = [];
+    let supervisor = "";
     app.persons.forEach((person, i) => {
       app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
-          if(slot[2] === true) {
+          if (slot[2]) {
             supervisor = person;
-          } else{
-            workersList += " " + person + " ";
+          } else {
+            workersList.push(person);
           }
         }
       });
     });
-    return (<><b>{supervisor}</b>{workersList}</>);
+    return (<><b>{supervisor}</b> {workersList.join(" ")}</>);
   }
 }
 
 @observer
 class ControlPanel extends React.Component<{}, {}> {
   render() {
-    if (app.focusPlanCoordinates != null) {
-      return (
-        <>
-        <div>
-          <b>
-            {app.locationNames[app.focusPlanCoordinates[1]] +
-              " kl. " +
-              app.timeNames[app.focusPlanCoordinates[0]]}
-          </b>
-        </div>
-        <div>
-          {this.addOrRemoveButton()}
-        </div>
-        <div>
-          {this.supervisorButton()}
-        </div>
-        </>
-      );
-    } else {
+    if (app.focusPlanCoordinates == null) {
       return "";
     }
+    const [t, l] = app.focusPlanCoordinates;
+    return (
+      <>
+      <div>
+        <b>
+          {app.locationNames[t]} kl. {app.timeNames[l]}
+        </b>
+      </div>
+      <div>
+        {this.addOrRemoveButton()}
+      </div>
+      <div>
+        {this.supervisorButton()}
+      </div>
+      </>
+    );
   }
 
   supervisorButton() {
-    var button = <></>
-    if (app.focusPlanCoordinates != null) {
-      var focusCord = app.focusPlanCoordinates;
-      app.persons.forEach( (_person, i) => {
-        app.personsWorkslots[i].forEach(slot => {
-          if (slot[0] === focusCord[0] && slot[1] === focusCord[1] && app.focusPersonIndex == i) {
-            if(slot[2] === false) {
-              button = (
-                <button
-                  onClick={_e => this.addAsSupervisor(i)}
-                >
-                  Gør til ansvarlig
-                </button>
-              );
-            } else if (slot[2] === true) {
-              button = (
-                <button
-                  onClick={_e => this.removeAsSupervisor(i)}
-                >
-                  Gør uansvarlig
-                </button>
-              );
-            }
-          }
-        });
-      });
+    if (app.focusPlanCoordinates == null) {
+      return <></>;
     }
+    let button = <></>;
+    const [t, l] = app.focusPlanCoordinates;
+    app.persons.forEach( (_person, i) => {
+      app.personsWorkslots[i].forEach(slot => {
+        if (slot[0] === t && slot[1] === l && app.focusPersonIndex == i) {
+          if(slot[2] === false) {
+            button = (
+              <button
+                onClick={_e => this.addAsSupervisor(i)}
+              >
+                Gør til ansvarlig
+              </button>
+            );
+          } else if (slot[2] === true) {
+            button = (
+              <button
+                onClick={_e => this.removeAsSupervisor(i)}
+              >
+                Gør uansvarlig
+              </button>
+            );
+          }
+        }
+      });
+    });
     return button;
   }
 

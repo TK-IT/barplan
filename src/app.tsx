@@ -26,6 +26,12 @@ class App {
       slot => slot[0] === t && slot[1] === l
     );
   }
+
+  isTimeSlotInFocus(t: number, l: number) {
+    return app.focusPlanCoordinates != null &&
+      app.focusPlanCoordinates[0] === t &&
+      app.focusPlanCoordinates[1] === l;
+  }
 }
 
 export const app = new App();
