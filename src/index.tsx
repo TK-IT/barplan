@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { app } from './app';
+import { planGenerator } from './generator';
 import styles from './index.scss';
 import { classNames } from './util';
 
@@ -39,37 +40,11 @@ class AppComponent extends React.Component<{}, {}> {
             <ControlPanel />
           </div>
         </div>
-        <button onClick={_e => this.generatePlan()}>
+        <button onClick={_e => planGenerator.generatePlan()}>
           Generer Barplan
         </button>
       </>
     );
-  }
-
-  @action
-  generatePlan() {
-    for (let t=0 ; t<app.timeNames.length ; t++) {
-      for (let l=0 ; l<app.locationNames.length ; l++) {
-        if (app.locationNames[l] === "Drinksbar") {
-          this.fillSlot(t,l,6)
-        } else if (app.locationNames[l] === "Kamera") {
-          this.fillSlot(t,l,1)
-        } else {
-          this.fillSlot(t,l,3)
-        }
-      }
-    }
-  }
-
-  fillSlot(time: number, location: number, amount: number) {
-    let workers = 0;
-    while (workers<amount) {
-      const randNum = Math.floor(Math.random() * app.persons.length)
-      if (!app.personsWorkslots[randNum].some(slot => slot[0] == time)) {
-        app.personsWorkslots[randNum].push([time, location, false]);
-        workers++;
-      }
-    }
   }
 
   @action
