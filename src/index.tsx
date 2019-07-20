@@ -117,7 +117,7 @@ class Plan extends React.Component<{}, {}> {
                     [styles.doubleBooking]: this.doubleBookingHasOccurred(t, l) // Will overwrite personInFocus
                   })}
                 >
-                  {this.listWorkers(t, l)}
+                  {this.workslotContentDecision(t,l)}
                 </td>
               ))}
             </tr>
@@ -137,6 +137,12 @@ class Plan extends React.Component<{}, {}> {
       }
     }
     return false;
+  }
+
+  workslotContentDecision(t: number, l: number) {
+    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+      return (<b>-</b>)
+    } else return this.listWorkers(t,l)
   }
 
   listWorkers(t: number, l: number) {
@@ -175,10 +181,69 @@ class ControlPanel extends React.Component<{}, {}> {
             {app.locationNames[l]} kl. {app.timeNames[t]}
           </b>
         </div>
-        <div>{this.addOrRemoveButton()}</div>
-        <div>{this.supervisorButton()}</div>
+        {this.buttons()}
       </>
     );
+  }
+
+  buttons() {
+    if (app.focusPlanCoordinates == null) {
+      return <></>;
+    }
+    const [t, l] = app.focusPlanCoordinates;
+    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+      return (
+        <div>
+          <button onClick={_e => this.openWorkslot()}>
+          Genåben vagt
+          </button>
+        </div>
+      )
+    } else {
+      return (
+        <>
+          <div>{this.addOrRemoveButton()}</div>
+          <div>{this.supervisorButton()}</div>
+          <div>{this.workstationClosedButtons()}</div>
+        </>
+      )
+    }
+  }
+
+  workstationClosedButtons() {
+    if (app.focusPlanCoordinates == null) {
+      return <></>;
+    }
+    let button = <></>;
+    const [t, l] = app.focusPlanCoordinates;
+    if (!app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+      button = (
+        <button onClick={_e => this.closeWorkslot()}>
+          Lad denne vagt være lukket
+        </button>
+      );
+    } 
+    return button;
+  }
+
+  @action
+  closeWorkslot() {
+    if (app.focusPlanCoordinates != null) {
+      const [t,l] = app.focusPlanCoordinates;
+      app.closedWorkslots.push([t,l]);
+    }
+  }
+
+  @action
+  openWorkslot() {
+    if (app.focusPlanCoordinates != null) {
+      const [t, l] = app.focusPlanCoordinates;
+      app.closedWorkslots.forEach((coords, i) => {
+        if (coords[0] === t && coords[1] === l) {
+          app.closedWorkslots.splice(i, 1);
+        }
+      });
+    }
   }
 
   supervisorButton() {

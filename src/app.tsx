@@ -1,4 +1,4 @@
-import { computed, observable } from "mobx";
+import { computed, observable } from 'mobx';
 
 class App {
   @observable
@@ -14,9 +14,11 @@ class App {
   @observable
   focusPersonIndex: number | null = null;
   @observable
+  focusPlanCoordinates: number[] | null = null;
+  @observable
   personsWorkslots: [number, number, boolean][][] = [[]];
   @observable
-  focusPlanCoordinates: number[] | null = null;
+  closedWorkslots: [number, number][] = []
 
   @computed get personWorkslotMap() {
     const byPerson: {
