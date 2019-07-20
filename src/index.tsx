@@ -1,11 +1,11 @@
-import { action } from 'mobx';
-import { observer } from 'mobx-react';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { action } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { app } from './app';
-import styles from './index.scss';
-import { classNames } from './util';
+import { app } from "./app";
+import styles from "./index.scss";
+import { classNames } from "./util";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -111,13 +111,11 @@ class Plan extends React.Component<{}, {}> {
               {app.locationNames.map((_loc, l) => (
                 <td
                   onClick={() => (app.focusPlanCoordinates = [t, l])}
-                  className={
-                    //this.focusedPersonInSlot(t, l) ? styles.personInFocus+" "+styles.timeSlotInFocus : ""
-                    classNames({
-                      [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
-                      [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l)
-                    })
-                  }
+                  className={classNames({
+                    [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
+                    [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l),
+                    [styles.doubleBooking]: this.doubleBookingHasOccurred(t, l) // Will overwrite personInFocus
+                  })}
                 >
                   {this.listWorkers(t, l)}
                 </td>
@@ -127,6 +125,17 @@ class Plan extends React.Component<{}, {}> {
         </tbody>
       </table>
     );
+  }
+  doubleBookingHasOccurred(t: number, l: number): boolean {
+    for (let i = 0; i < app.persons.length; i++) {
+      const timeSlotList = app.personsWorkslots[i].filter(
+        slot => slot[0] === t
+      );
+      if (timeSlotList.length > 1 && timeSlotList.some(slot => slot[1] === l)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   listWorkers(t: number, l: number) {
@@ -201,31 +210,40 @@ class ControlPanel extends React.Component<{}, {}> {
 
   @action
   removeAsSupervisor(personIndex: number): void {
-    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(personIndex, false);
+    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+      personIndex,
+      false
+    );
   }
 
   @action
   addAsSupervisor(personIndex: number): void {
-    if (app.focusPlanCoordinates == null) {}
-    else {
+    if (app.focusPlanCoordinates == null) {
+    } else {
       // Find and remove a current supervisor
-      const [t,l] = app.focusPlanCoordinates;
-      for (let i=0 ; i<app.persons.length ; i++) {
+      const [t, l] = app.focusPlanCoordinates;
+      for (let i = 0; i < app.persons.length; i++) {
         app.personsWorkslots[i].forEach(slot => {
           if (slot[0] === t && slot[1] === l && slot[2] === true) {
             slot[2] = false;
           }
         });
       }
-      this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(personIndex, true);
+      this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+        personIndex,
+        true
+      );
     }
   }
 
   @action
-  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(personIndex: number, supervisorStatus: boolean) {
-    if (app.focusPlanCoordinates == null) {}
-    else {
-      const [t,l] = app.focusPlanCoordinates;
+  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+    personIndex: number,
+    supervisorStatus: boolean
+  ) {
+    if (app.focusPlanCoordinates == null) {
+    } else {
+      const [t, l] = app.focusPlanCoordinates;
       app.personsWorkslots[personIndex].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
           slot[2] = supervisorStatus;
@@ -272,7 +290,7 @@ class ControlPanel extends React.Component<{}, {}> {
   @action
   removePersonInFocusFromSlot() {
     if (app.focusPersonIndex != null && app.focusPlanCoordinates != null) {
-      const [t,l] = app.focusPlanCoordinates;
+      const [t, l] = app.focusPlanCoordinates;
       const focusIndex = app.focusPersonIndex;
       app.personsWorkslots[app.focusPersonIndex].forEach((coord, i) => {
         if (coord[0] === t && coord[1] === l) {
