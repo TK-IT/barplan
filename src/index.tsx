@@ -29,13 +29,13 @@ class AppComponent extends React.Component<{}, {}> {
           </div>
         </div>
         <div className={styles.editor}>
-          <div>
+          <div className={styles.personsList}>
             <PersonList />
           </div>
-          <div>
+          <div className={styles.plan}>
             <Plan />
           </div>
-          <div>
+          <div className={styles.controlPanel}>
             <ControlPanel />
           </div>
         </div>

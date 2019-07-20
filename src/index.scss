@@ -1,14 +1,23 @@
-.TheName {
-  color: red;
-  font-weight: bold;
-}
+
 .editor {
   display: flex;
   flex: row;
-  & > div {
-    flex-grow: 1;
-    flex-basis: 0;
-  }
+}
+.personsList {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+.plan {
+  flex-grow: 3;
+  flex-basis: 0;
+}
+.controlPanel {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 .personInFocus {
   background-color: #faebd7;
