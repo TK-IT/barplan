@@ -1,11 +1,11 @@
-import { action } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import styles from "./index.scss";
-import { classNames } from "./util";
+import { app } from './app';
+import styles from './index.scss';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -126,6 +126,7 @@ class Plan extends React.Component<{}, {}> {
       </table>
     );
   }
+
   doubleBookingHasOccurred(t: number, l: number): boolean {
     for (let i = 0; i < app.persons.length; i++) {
       const timeSlotList = app.personsWorkslots[i].filter(
@@ -171,7 +172,7 @@ class ControlPanel extends React.Component<{}, {}> {
       <>
         <div>
           <b>
-            {app.locationNames[t]} kl. {app.timeNames[l]}
+            {app.locationNames[l]} kl. {app.timeNames[t]}
           </b>
         </div>
         <div>{this.addOrRemoveButton()}</div>
