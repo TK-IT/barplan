@@ -85,7 +85,10 @@ class PersonList extends React.Component<{}, {}> {
           {app.persons.map((name, i) => (
             <tr>
               <td
-                onClick={action(() => (app.focusPersonIndex = i))}
+                onClick={e => {
+                  this.onClick(i);
+                  e.stopPropagation();
+                }}
                 className={
                   app.focusPersonIndex === i ? styles.personInFocus : ""
                 }
@@ -100,6 +103,11 @@ class PersonList extends React.Component<{}, {}> {
         </tbody>
       </table>
     );
+  }
+
+  @action
+  onClick(personIndex: number) {
+    app.focusPersonIndex = personIndex;
   }
 
   numberOfTimeslotsOnLocation(l: number, i: number) {
