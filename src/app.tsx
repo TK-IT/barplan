@@ -84,12 +84,17 @@ class App {
     if (this.focusPersonIndex != null && this.focusPlanCoordinates != null) {
       const [t, l] = this.focusPlanCoordinates;
       const focusIndex = this.focusPersonIndex;
-      this.personsWorkslots[this.focusPersonIndex].forEach((coord, i) => {
-        if (coord[0] === t && coord[1] === l) {
-          app.personsWorkslots[focusIndex].splice(i, 1);
-        }
-      });
+      this.removePerson(focusIndex, t, l);
     }
+  }
+
+  @action
+  removePerson(personIndex: number, t: number, l: number) {
+    this.personsWorkslots[personIndex].forEach((coord, i) => {
+      if (coord[0] === t && coord[1] === l) {
+        app.personsWorkslots[personIndex].splice(i, 1);
+      }
+    });
   }
 
   @action
