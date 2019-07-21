@@ -1,4 +1,4 @@
-import { computed, observable } from "mobx";
+import { action, computed, observable } from "mobx";
 
 import defaultPersonsString from "../sampledata/personer.txt";
 import defaultPlanTemplateString from "../sampledata/plan.txt";
@@ -59,6 +59,32 @@ class App {
       app.focusPlanCoordinates[0] === t &&
       app.focusPlanCoordinates[1] === l
     );
+  }
+
+  @action
+  addPersonInFocusToSlot() {
+    if (this.focusPersonIndex != null && this.focusPlanCoordinates != null) {
+      const [t, l] = this.focusPlanCoordinates;
+      this.addPersonToSlot(t, l, this.focusPersonIndex);
+    }
+  }
+
+  @action
+  addPersonToSlot(t: number, l: number, personIndex: number) {
+    this.personsWorkslots[personIndex].push([t, l, false]);
+  }
+
+  @action
+  removePersonInFocusFromSlot() {
+    if (this.focusPersonIndex != null && this.focusPlanCoordinates != null) {
+      const [t, l] = this.focusPlanCoordinates;
+      const focusIndex = this.focusPersonIndex;
+      this.personsWorkslots[this.focusPersonIndex].forEach((coord, i) => {
+        if (coord[0] === t && coord[1] === l) {
+          app.personsWorkslots[focusIndex].splice(i, 1);
+        }
+      });
+    }
   }
 }
 
