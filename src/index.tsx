@@ -138,7 +138,12 @@ class Plan extends React.Component<{}, {}> {
 
   @action
   onClick(t: number, l: number) {
-    app.focusPlanCoordinates = [t, l];
+    if (app.focusPersonIndex === null || app.isFocusedPersonInSlot(t, l)) {
+      app.focusPlanCoordinates = [t, l];
+      return;
+    }
+    app.addPersonToSlot(t, l, app.focusPersonIndex);
+    app.focusPersonIndex = null;
   }
 
   doubleBookingHasOccurred(t: number, l: number): boolean {
