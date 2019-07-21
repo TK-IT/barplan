@@ -1,4 +1,4 @@
-import { action } from "mobx";
+import { action, configure } from "mobx";
 import { observer } from "mobx-react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -75,7 +75,7 @@ class PersonList extends React.Component<{}, {}> {
           {app.persons.map((name, i) => (
             <tr>
               <td
-                onClick={() => (app.focusPersonIndex = i)}
+                onClick={action(() => (app.focusPersonIndex = i))}
                 className={
                   app.focusPersonIndex === i ? styles.personInFocus : ""
                 }
@@ -114,7 +114,7 @@ class Plan extends React.Component<{}, {}> {
               <td>{time}</td>
               {app.locationNames.map((_loc, l) => (
                 <td
-                  onClick={() => (app.focusPlanCoordinates = [t, l])}
+                  onClick={action(() => (app.focusPlanCoordinates = [t, l]))}
                   className={classNames({
                     [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
                     [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l),
@@ -369,4 +369,5 @@ class ControlPanel extends React.Component<{}, {}> {
   }
 }
 
+configure({ enforceActions: "always", computedRequiresReaction: true });
 ReactDOM.render(<AppComponent />, document.getElementById("root"));
