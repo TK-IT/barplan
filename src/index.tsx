@@ -139,7 +139,7 @@ class Plan extends React.Component<{}, {}> {
   @action
   onClick(t: number, l: number) {
     if (app.focusPersonIndex === null || app.isFocusedPersonInSlot(t, l)) {
-      app.focusPlanCoordinates = [t, l];
+      app.focusPlanCoordinates = app.isTimeSlotInFocus(t, l) ? null : [t, l];
       return;
     }
     app.addPersonToSlot(t, l, app.focusPersonIndex);
