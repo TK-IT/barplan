@@ -1,12 +1,13 @@
-import { action, configure } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action, configure } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import { planGenerator } from "./generator";
-import styles from "./index.scss";
-import { classNames } from "./util";
+import { app } from './app';
+import { planGenerator } from './generator';
+import styles from './index.scss';
+import { keyHandler } from './keyhandler';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -14,10 +15,11 @@ class AppComponent extends React.Component<{}, {}> {
     this.parsePlanTemplateString(app.planTemplateString);
     this.parsePersonsString(app.personsString);
   }
-
+ 
   render() {
     return (
-      <>
+      <div>
+        {document.addEventListener('keypress', e => keyHandler.onKeyPress(e.key))}
         <b>Plan</b>
         <div>
           <textarea
@@ -48,7 +50,7 @@ class AppComponent extends React.Component<{}, {}> {
         <button onClick={_e => planGenerator.generatePlan()}>
           Generer Barplan
         </button>
-      </>
+      </div>
     );
   }
 
