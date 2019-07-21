@@ -1,16 +1,19 @@
 import { computed, observable } from "mobx";
 
+import defaultPersonsString from "../sampledata/personer.txt";
+import defaultPlanTemplateString from "../sampledata/plan.txt";
+
 class App {
   @observable
-  planTemplateString = "";
+  planTemplateString = defaultPlanTemplateString;
   @observable
-  locationNames = ["Drinksbar"];
+  locationNames: string[] = [];
   @observable
-  timeNames = ["21-22"];
+  timeNames: string[] = [];
   @observable
-  personsString = "SEKR";
+  personsString = defaultPersonsString;
   @observable
-  persons = ["SEKR"];
+  persons: string[] = [];
   @observable
   focusPersonIndex: number | null = null;
   @observable

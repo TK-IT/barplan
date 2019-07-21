@@ -10,6 +10,11 @@ import { classNames } from "./util";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
+  componentDidMount() {
+    this.parsePlanTemplateString(app.planTemplateString);
+    this.parsePersonsString(app.personsString);
+  }
+
   render() {
     return (
       <>
