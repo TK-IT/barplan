@@ -18,7 +18,11 @@ class AppComponent extends React.Component<{}, {}> {
 
   render() {
     return (
-      <div>
+      <div
+        className={classNames({
+          [styles.hasFocusedPerson]: app.focusPersonIndex != null
+        })}
+      >
         <b>Plan</b>
         <div>
           <textarea

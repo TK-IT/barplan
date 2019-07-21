@@ -56,6 +56,9 @@ td {
     &:hover > .buttons {
       display: block;
     }
+    .hasFocusedPerson &:hover {
+      display: none;
+    }
     & > .buttons {
       white-space: nowrap;
       position: absolute;
