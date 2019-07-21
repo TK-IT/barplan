@@ -15,11 +15,10 @@ class AppComponent extends React.Component<{}, {}> {
     this.parsePlanTemplateString(app.planTemplateString);
     this.parsePersonsString(app.personsString);
   }
- 
+
   render() {
     return (
       <div>
-        {document.addEventListener('keypress', e => keyHandler.onKeyPress(e.key))}
         <b>Plan</b>
         <div>
           <textarea
@@ -363,4 +362,5 @@ class ControlPanel extends React.Component<{}, {}> {
 }
 
 configure({ enforceActions: "always", computedRequiresReaction: true });
+document.addEventListener("keypress", e => keyHandler.onKeyPress(e.key));
 ReactDOM.render(<AppComponent />, document.getElementById("root"));
