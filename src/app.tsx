@@ -138,6 +138,22 @@ class App {
       }
     });
   }
+
+  @action
+  closeWorkslot(t: number, l: number) {
+    if (!app.closedWorkslots.some(([tt, ll]) => tt == t && ll == l)) {
+      app.closedWorkslots.push([t, l]);
+    }
+  }
+
+  @action
+  openWorkslot(t: number, l: number) {
+    this.closedWorkslots.forEach((coords, i) => {
+      if (coords[0] === t && coords[1] === l) {
+        this.closedWorkslots.splice(i, 1);
+      }
+    });
+  }
 }
 
 export const app = new App();

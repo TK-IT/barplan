@@ -323,7 +323,7 @@ class ControlPanel extends React.Component<{}, {}> {
   closeWorkslot() {
     if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.closedWorkslots.push([t, l]);
+      app.closeWorkslot(t, l);
     }
   }
 
@@ -331,11 +331,7 @@ class ControlPanel extends React.Component<{}, {}> {
   openWorkslot() {
     if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.closedWorkslots.forEach((coords, i) => {
-        if (coords[0] === t && coords[1] === l) {
-          app.closedWorkslots.splice(i, 1);
-        }
-      });
+      app.openWorkslot(t, l);
     }
   }
 
