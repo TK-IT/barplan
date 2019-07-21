@@ -1,6 +1,6 @@
-import { action } from 'mobx';
+import { action } from "mobx";
 
-import { app } from './app';
+import { app } from "./app";
 
 class KeyHandler {
   @action

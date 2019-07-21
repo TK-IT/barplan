@@ -84,12 +84,79 @@ class App {
     if (this.focusPersonIndex != null && this.focusPlanCoordinates != null) {
       const [t, l] = this.focusPlanCoordinates;
       const focusIndex = this.focusPersonIndex;
-      this.personsWorkslots[this.focusPersonIndex].forEach((coord, i) => {
-        if (coord[0] === t && coord[1] === l) {
-          app.personsWorkslots[focusIndex].splice(i, 1);
+      this.removePerson(focusIndex, t, l);
+    }
+  }
+
+  @action
+  removePerson(personIndex: number, t: number, l: number) {
+    this.personsWorkslots[personIndex].forEach((coord, i) => {
+      if (coord[0] === t && coord[1] === l) {
+        app.personsWorkslots[personIndex].splice(i, 1);
+      }
+    });
+  }
+
+  @action
+  removeAsSupervisor(personIndex: number, t: number, l: number): void {
+    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+      personIndex,
+      t,
+      l,
+      false
+    );
+  }
+
+  @action
+  addAsSupervisor(personIndex: number, t: number, l: number): void {
+    // Find and remove a current supervisor
+    for (let i = 0; i < this.persons.length; i++) {
+      this.personsWorkslots[i].forEach(slot => {
+        if (slot[0] === t && slot[1] === l && slot[2] === true) {
+          slot[2] = false;
         }
       });
     }
+    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+      personIndex,
+      t,
+      l,
+      true
+    );
+  }
+
+  @action
+  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+    personIndex: number,
+    t: number,
+    l: number,
+    supervisorStatus: boolean
+  ) {
+    this.personsWorkslots[personIndex].forEach(slot => {
+      if (slot[0] === t && slot[1] === l) {
+        slot[2] = supervisorStatus;
+      }
+    });
+  }
+
+  @action
+  closeWorkslot(t: number, l: number) {
+    if (!app.closedWorkslots.some(([tt, ll]) => tt == t && ll == l)) {
+      app.closedWorkslots.push([t, l]);
+    }
+  }
+
+  @action
+  openWorkslot(t: number, l: number) {
+    this.closedWorkslots.forEach((coords, i) => {
+      if (coords[0] === t && coords[1] === l) {
+        this.closedWorkslots.splice(i, 1);
+      }
+    });
+  }
+
+  workslotClosed(t: number, l: number): boolean {
+    return this.closedWorkslots.some(slot => slot[0] === t && slot[1] === l);
   }
 }
 

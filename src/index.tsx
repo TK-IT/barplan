@@ -22,36 +22,42 @@ class AppComponent extends React.Component<{}, {}> {
         {document.addEventListener("keypress", e =>
           keyHandler.onKeyPress(e.key)
         )}
-        <b>Plan</b>
-        <div>
-          <textarea
-            value={app.planTemplateString}
-            onChange={e => this.parsePlanTemplateString(e.target.value)}
-          />
-        </div>
-        <div>
-          <b>Personer</b>
+        <div
+          className={classNames({
+            [styles.hasFocusedPerson]: app.focusPersonIndex != null
+          })}
+        >
+          <b>Plan</b>
           <div>
             <textarea
-              value={app.personsString}
-              onChange={e => this.parsePersonsString(e.target.value)}
+              value={app.planTemplateString}
+              onChange={e => this.parsePlanTemplateString(e.target.value)}
             />
           </div>
+          <div>
+            <b>Personer</b>
+            <div>
+              <textarea
+                value={app.personsString}
+                onChange={e => this.parsePersonsString(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className={styles.editor}>
+            <div className={styles.personsList}>
+              <PersonList />
+            </div>
+            <div className={styles.plan}>
+              <Plan />
+            </div>
+            <div className={styles.controlPanel}>
+              <ControlPanel />
+            </div>
+          </div>
+          <button onClick={_e => planGenerator.generatePlan()}>
+            Generer Barplan
+          </button>
         </div>
-        <div className={styles.editor}>
-          <div className={styles.personsList}>
-            <PersonList />
-          </div>
-          <div className={styles.plan}>
-            <Plan />
-          </div>
-          <div className={styles.controlPanel}>
-            <ControlPanel />
-          </div>
-        </div>
-        <button onClick={_e => planGenerator.generatePlan()}>
-          Generer Barplan
-        </button>
       </div>
     );
   }
@@ -84,7 +90,10 @@ class PersonList extends React.Component<{}, {}> {
           {app.persons.map((name, i) => (
             <tr>
               <td
-                onClick={action(() => (app.focusPersonIndex = i))}
+                onClick={e => {
+                  this.onClick(i);
+                  e.stopPropagation();
+                }}
                 className={
                   app.focusPersonIndex === i ? styles.personInFocus : ""
                 }
@@ -99,6 +108,12 @@ class PersonList extends React.Component<{}, {}> {
         </tbody>
       </table>
     );
+  }
+
+  @action
+  onClick(personIndex: number) {
+    app.focusPersonIndex =
+      app.focusPersonIndex === personIndex ? null : personIndex;
   }
 
   numberOfTimeslotsOnLocation(l: number, i: number) {
@@ -163,29 +178,138 @@ class Plan extends React.Component<{}, {}> {
   }
 
   workslotContentDecision(t: number, l: number) {
-    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
-      return <b>-</b>;
+    if (app.workslotClosed(t, l)) {
+      const button = (
+        <button
+          onClick={e => {
+            app.openWorkslot(t, l);
+            e.stopPropagation();
+          }}
+        >
+          Åben
+        </button>
+      );
+      return (
+        <div className={styles.workslotWorkerList}>
+          <div className={styles.emptyWorkslotButtons}>
+            <b>-</b>
+            <div className={styles.buttons}>{button}</div>
+          </div>
+        </div>
+      );
     } else return this.listWorkers(t, l);
   }
 
   listWorkers(t: number, l: number) {
-    const workersList: string[] = [];
-    let supervisor = "";
-    app.persons.forEach((person, i) => {
+    const workersList: JSX.Element[] = [];
+    app.persons.forEach((personName, i) => {
       app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
+          const person = (
+            <PersonWorkslot
+              key={i}
+              name={personName}
+              supervisor={slot[2]}
+              onAddSupervisor={() => app.addAsSupervisor(i, t, l)}
+              onRemoveSupervisor={() => app.removeAsSupervisor(i, t, l)}
+              onRemove={() => app.removePerson(i, t, l)}
+            />
+          );
           if (slot[2]) {
-            supervisor = person;
+            // Put supervisor first
+            workersList.unshift(person);
           } else {
             workersList.push(person);
           }
         }
       });
     });
+    if (!workersList.length) {
+      const button = (
+        <button
+          onClick={e => {
+            app.closeWorkslot(t, l);
+            e.stopPropagation();
+          }}
+        >
+          Luk
+        </button>
+      );
+      workersList.push(
+        <div className={styles.emptyWorkslotButtons}>
+          <div className={styles.buttons}>{button}</div>
+        </div>
+      );
+    }
+    return <div className={styles.workslotWorkerList}>{workersList}</div>;
+  }
+}
+
+interface PersonWorkslotProps {
+  name: string;
+  supervisor: boolean;
+  onAddSupervisor: () => void;
+  onRemoveSupervisor: () => void;
+  onRemove: () => void;
+}
+
+@observer
+class PersonWorkslot extends React.Component<PersonWorkslotProps, {}> {
+  render() {
     return (
-      <>
-        <b>{supervisor}</b> {workersList.join(" ")}
-      </>
+      <div
+        className={classNames({ [styles.supervisor]: this.props.supervisor })}
+      >
+        {this.props.name}
+        {this.renderButtons()}
+      </div>
+    );
+  }
+
+  renderButtons() {
+    return (
+      <div className={styles.buttons}>
+        {this.renderSupervisorButton()}
+        {this.renderRemoveButton()}
+      </div>
+    );
+  }
+
+  renderSupervisorButton() {
+    if (this.props.supervisor)
+      return (
+        <button
+          onClick={e => {
+            this.props.onRemoveSupervisor();
+            e.stopPropagation();
+          }}
+        >
+          -
+        </button>
+      );
+    else
+      return (
+        <button
+          onClick={e => {
+            this.props.onAddSupervisor();
+            e.stopPropagation();
+          }}
+        >
+          +
+        </button>
+      );
+  }
+
+  renderRemoveButton() {
+    return (
+      <button
+        onClick={e => {
+          this.props.onRemove();
+          e.stopPropagation();
+        }}
+      >
+        X
+      </button>
     );
   }
 }
@@ -214,7 +338,7 @@ class ControlPanel extends React.Component<{}, {}> {
       return <></>;
     }
     const [t, l] = app.focusPlanCoordinates;
-    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+    if (app.workslotClosed(t, l)) {
       return (
         <div>
           <button onClick={_e => this.openWorkslot()}>Genåben vagt</button>
@@ -237,7 +361,7 @@ class ControlPanel extends React.Component<{}, {}> {
     }
     let button = <></>;
     const [t, l] = app.focusPlanCoordinates;
-    if (!app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+    if (!app.workslotClosed(t, l)) {
       button = (
         <button onClick={_e => this.closeWorkslot()}>
           Lad denne vagt være lukket
@@ -251,7 +375,7 @@ class ControlPanel extends React.Component<{}, {}> {
   closeWorkslot() {
     if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.closedWorkslots.push([t, l]);
+      app.closeWorkslot(t, l);
     }
   }
 
@@ -259,11 +383,7 @@ class ControlPanel extends React.Component<{}, {}> {
   openWorkslot() {
     if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.closedWorkslots.forEach((coords, i) => {
-        if (coords[0] === t && coords[1] === l) {
-          app.closedWorkslots.splice(i, 1);
-        }
-      });
+      app.openWorkslot(t, l);
     }
   }
 
@@ -297,45 +417,17 @@ class ControlPanel extends React.Component<{}, {}> {
 
   @action
   removeAsSupervisor(personIndex: number): void {
-    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-      personIndex,
-      false
-    );
-  }
-
-  @action
-  addAsSupervisor(personIndex: number): void {
-    if (app.focusPlanCoordinates == null) {
-    } else {
-      // Find and remove a current supervisor
+    if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      for (let i = 0; i < app.persons.length; i++) {
-        app.personsWorkslots[i].forEach(slot => {
-          if (slot[0] === t && slot[1] === l && slot[2] === true) {
-            slot[2] = false;
-          }
-        });
-      }
-      this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-        personIndex,
-        true
-      );
+      app.removeAsSupervisor(personIndex, t, l);
     }
   }
 
   @action
-  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-    personIndex: number,
-    supervisorStatus: boolean
-  ) {
-    if (app.focusPlanCoordinates == null) {
-    } else {
+  addAsSupervisor(personIndex: number): void {
+    if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.personsWorkslots[personIndex].forEach(slot => {
-        if (slot[0] === t && slot[1] === l) {
-          slot[2] = supervisorStatus;
-        }
-      });
+      app.addAsSupervisor(personIndex, t, l);
     }
   }
 
@@ -365,4 +457,5 @@ class ControlPanel extends React.Component<{}, {}> {
 }
 
 configure({ enforceActions: "always", computedRequiresReaction: true });
+document.addEventListener("keypress", e => keyHandler.onKeyPress(e.key));
 ReactDOM.render(<AppComponent />, document.getElementById("root"));
