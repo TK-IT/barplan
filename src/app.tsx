@@ -154,6 +154,10 @@ class App {
       }
     });
   }
+
+  workslotClosed(t: number, l: number): boolean {
+    return this.closedWorkslots.some(slot => slot[0] === t && slot[1] === l);
+  }
 }
 
 export const app = new App();

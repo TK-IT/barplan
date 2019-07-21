@@ -286,7 +286,7 @@ class ControlPanel extends React.Component<{}, {}> {
       return <></>;
     }
     const [t, l] = app.focusPlanCoordinates;
-    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+    if (app.workslotClosed(t, l)) {
       return (
         <div>
           <button onClick={_e => this.openWorkslot()}>Genåben vagt</button>
@@ -309,7 +309,7 @@ class ControlPanel extends React.Component<{}, {}> {
     }
     let button = <></>;
     const [t, l] = app.focusPlanCoordinates;
-    if (!app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
+    if (!app.workslotClosed(t, l)) {
       button = (
         <button onClick={_e => this.closeWorkslot()}>
           Lad denne vagt være lukket
