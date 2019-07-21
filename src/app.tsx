@@ -1,4 +1,4 @@
-import { computed, observable } from 'mobx';
+import { computed, observable } from "mobx";
 
 class App {
   @observable
@@ -18,7 +18,7 @@ class App {
   @observable
   personsWorkslots: [number, number, boolean][][] = [[]];
   @observable
-  closedWorkslots: [number, number][] = []
+  closedWorkslots: [number, number][] = [];
 
   @computed get personWorkslotMap() {
     const byPerson: {

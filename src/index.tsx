@@ -1,12 +1,12 @@
-import { action } from 'mobx';
-import { observer } from 'mobx-react';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { action } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { app } from './app';
-import { planGenerator } from './generator';
-import styles from './index.scss';
-import { classNames } from './util';
+import { app } from "./app";
+import { planGenerator } from "./generator";
+import styles from "./index.scss";
+import { classNames } from "./util";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -121,7 +121,7 @@ class Plan extends React.Component<{}, {}> {
                     [styles.doubleBooking]: this.doubleBookingHasOccurred(t, l) // Will overwrite personInFocus
                   })}
                 >
-                  {this.workslotContentDecision(t,l)}
+                  {this.workslotContentDecision(t, l)}
                 </td>
               ))}
             </tr>
@@ -145,8 +145,8 @@ class Plan extends React.Component<{}, {}> {
 
   workslotContentDecision(t: number, l: number) {
     if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
-      return (<b>-</b>)
-    } else return this.listWorkers(t,l)
+      return <b>-</b>;
+    } else return this.listWorkers(t, l);
   }
 
   listWorkers(t: number, l: number) {
@@ -198,11 +198,9 @@ class ControlPanel extends React.Component<{}, {}> {
     if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
       return (
         <div>
-          <button onClick={_e => this.openWorkslot()}>
-          Genåben vagt
-          </button>
+          <button onClick={_e => this.openWorkslot()}>Genåben vagt</button>
         </div>
-      )
+      );
     } else {
       return (
         <>
@@ -210,7 +208,7 @@ class ControlPanel extends React.Component<{}, {}> {
           <div>{this.supervisorButton()}</div>
           <div>{this.workstationClosedButtons()}</div>
         </>
-      )
+      );
     }
   }
 
@@ -226,15 +224,15 @@ class ControlPanel extends React.Component<{}, {}> {
           Lad denne vagt være lukket
         </button>
       );
-    } 
+    }
     return button;
   }
 
   @action
   closeWorkslot() {
     if (app.focusPlanCoordinates != null) {
-      const [t,l] = app.focusPlanCoordinates;
-      app.closedWorkslots.push([t,l]);
+      const [t, l] = app.focusPlanCoordinates;
+      app.closedWorkslots.push([t, l]);
     }
   }
 
