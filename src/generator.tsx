@@ -1,6 +1,6 @@
-import { action } from 'mobx';
+import { action } from "mobx";
 
-import { app } from './app';
+import { app } from "./app";
 
 const best = ["SEKR", "PR", "FORM", "NF", "INKA", "KA$$", "KASS", "CERM", "VC"];
 
@@ -49,7 +49,7 @@ class PlanGenrator {
   }
 
   isFU(name: string) {
-    return name.match('FU..') && name.length === 4
+    return name.match("FU..") && name.length === 4;
   }
 }
 export const planGenerator = new PlanGenrator();
