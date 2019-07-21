@@ -19,9 +19,6 @@ class AppComponent extends React.Component<{}, {}> {
   render() {
     return (
       <div>
-        {document.addEventListener("keypress", e =>
-          keyHandler.onKeyPress(e.key)
-        )}
         <div
           className={classNames({
             [styles.hasFocusedPerson]: app.focusPersonIndex != null
