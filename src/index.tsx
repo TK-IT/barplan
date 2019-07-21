@@ -119,7 +119,7 @@ class Plan extends React.Component<{}, {}> {
               <td>{time}</td>
               {app.locationNames.map((_loc, l) => (
                 <td
-                  onClick={action(() => (app.focusPlanCoordinates = [t, l]))}
+                  onClick={() => this.onClick(t, l)}
                   className={classNames({
                     [styles.personInFocus]: app.isFocusedPersonInSlot(t, l),
                     [styles.timeSlotInFocus]: app.isTimeSlotInFocus(t, l),
@@ -134,6 +134,11 @@ class Plan extends React.Component<{}, {}> {
         </tbody>
       </table>
     );
+  }
+
+  @action
+  onClick(t: number, l: number) {
+    app.focusPlanCoordinates = [t, l];
   }
 
   doubleBookingHasOccurred(t: number, l: number): boolean {
