@@ -107,7 +107,8 @@ class PersonList extends React.Component<{}, {}> {
 
   @action
   onClick(personIndex: number) {
-    app.focusPersonIndex = personIndex;
+    app.focusPersonIndex =
+      app.focusPersonIndex === personIndex ? null : personIndex;
   }
 
   numberOfTimeslotsOnLocation(l: number, i: number) {
