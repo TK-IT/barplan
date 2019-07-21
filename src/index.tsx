@@ -294,45 +294,17 @@ class ControlPanel extends React.Component<{}, {}> {
 
   @action
   removeAsSupervisor(personIndex: number): void {
-    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-      personIndex,
-      false
-    );
-  }
-
-  @action
-  addAsSupervisor(personIndex: number): void {
-    if (app.focusPlanCoordinates == null) {
-    } else {
-      // Find and remove a current supervisor
+    if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      for (let i = 0; i < app.persons.length; i++) {
-        app.personsWorkslots[i].forEach(slot => {
-          if (slot[0] === t && slot[1] === l && slot[2] === true) {
-            slot[2] = false;
-          }
-        });
-      }
-      this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-        personIndex,
-        true
-      );
+      app.removeAsSupervisor(personIndex, t, l);
     }
   }
 
   @action
-  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
-    personIndex: number,
-    supervisorStatus: boolean
-  ) {
-    if (app.focusPlanCoordinates == null) {
-    } else {
+  addAsSupervisor(personIndex: number): void {
+    if (app.focusPlanCoordinates != null) {
       const [t, l] = app.focusPlanCoordinates;
-      app.personsWorkslots[personIndex].forEach(slot => {
-        if (slot[0] === t && slot[1] === l) {
-          slot[2] = supervisorStatus;
-        }
-      });
+      app.addAsSupervisor(personIndex, t, l);
     }
   }
 

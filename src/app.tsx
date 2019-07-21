@@ -91,6 +91,48 @@ class App {
       });
     }
   }
+
+  @action
+  removeAsSupervisor(personIndex: number, t: number, l: number): void {
+    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+      personIndex,
+      t,
+      l,
+      false
+    );
+  }
+
+  @action
+  addAsSupervisor(personIndex: number, t: number, l: number): void {
+    // Find and remove a current supervisor
+    for (let i = 0; i < this.persons.length; i++) {
+      this.personsWorkslots[i].forEach(slot => {
+        if (slot[0] === t && slot[1] === l && slot[2] === true) {
+          slot[2] = false;
+        }
+      });
+    }
+    this.setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+      personIndex,
+      t,
+      l,
+      true
+    );
+  }
+
+  @action
+  setSupervisorStatusForPersonWorkingOnFocusedTimeslot(
+    personIndex: number,
+    t: number,
+    l: number,
+    supervisorStatus: boolean
+  ) {
+    this.personsWorkslots[personIndex].forEach(slot => {
+      if (slot[0] === t && slot[1] === l) {
+        slot[2] = supervisorStatus;
+      }
+    });
+  }
 }
 
 export const app = new App();
