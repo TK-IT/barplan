@@ -166,23 +166,98 @@ class Plan extends React.Component<{}, {}> {
   }
 
   listWorkers(t: number, l: number) {
-    const workersList: string[] = [];
-    let supervisor = "";
-    app.persons.forEach((person, i) => {
+    const workersList: JSX.Element[] = [];
+    app.persons.forEach((personName, i) => {
       app.personsWorkslots[i].forEach(slot => {
         if (slot[0] === t && slot[1] === l) {
+          const person = (
+            <PersonWorkslot
+              key={i}
+              name={personName}
+              supervisor={slot[2]}
+              onAddSupervisor={() => app.addAsSupervisor(i, t, l)}
+              onRemoveSupervisor={() => app.removeAsSupervisor(i, t, l)}
+              onRemove={() => app.removePerson(i, t, l)}
+            />
+          );
           if (slot[2]) {
-            supervisor = person;
+            // Put supervisor first
+            workersList.unshift(person);
           } else {
             workersList.push(person);
           }
         }
       });
     });
+    return <div className={styles.workslotWorkerList}>{workersList}</div>;
+  }
+}
+
+interface PersonWorkslotProps {
+  name: string;
+  supervisor: boolean;
+  onAddSupervisor: () => void;
+  onRemoveSupervisor: () => void;
+  onRemove: () => void;
+}
+
+@observer
+class PersonWorkslot extends React.Component<PersonWorkslotProps, {}> {
+  render() {
     return (
-      <>
-        <b>{supervisor}</b> {workersList.join(" ")}
-      </>
+      <div
+        className={classNames({ [styles.supervisor]: this.props.supervisor })}
+      >
+        {this.props.name}
+        {this.renderButtons()}
+      </div>
+    );
+  }
+
+  renderButtons() {
+    return (
+      <div className={styles.buttons}>
+        {this.renderSupervisorButton()}
+        {this.renderRemoveButton()}
+      </div>
+    );
+  }
+
+  renderSupervisorButton() {
+    if (this.props.supervisor)
+      return (
+        <button
+          onClick={e => {
+            this.props.onRemoveSupervisor();
+            e.stopPropagation();
+          }}
+        >
+          -
+        </button>
+      );
+    else
+      return (
+        <button
+          onClick={e => {
+            this.props.onAddSupervisor();
+            e.stopPropagation();
+          }}
+        >
+          +
+        </button>
+      );
+  }
+
+  renderRemoveButton() {
+    return (
+      <button
+        onClick={e => {
+          this.props.onRemove();
+          e.stopPropagation();
+        }}
+      >
+        X
+      </button>
     );
   }
 }
