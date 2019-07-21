@@ -46,7 +46,11 @@ class App {
     if (this.focusPersonIndex == null) {
       return false;
     }
-    const byLocation = this.personWorkslotMap[this.focusPersonIndex][t];
+    return this.isPersonInSlot(this.focusPersonIndex, t, l);
+  }
+
+  isPersonInSlot(personIndex: number, t: number, l: number): boolean {
+    const byLocation = this.personWorkslotMap[personIndex][t];
     if (!byLocation) {
       return false;
     }
@@ -71,6 +75,7 @@ class App {
 
   @action
   addPersonToSlot(t: number, l: number, personIndex: number) {
+    if (this.isPersonInSlot(personIndex, t, l)) return;
     this.personsWorkslots[personIndex].push([t, l, false]);
   }
 
