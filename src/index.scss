@@ -33,7 +33,19 @@ td {
 
 .workslotWorkerList {
   display: flex;
+  min-width: 50px;
+  min-height: 1em;
   & > div {
+    margin-right: 6px;
+    min-width: 60px;
+
+    &.emptyWorkslotButtons {
+      flex: 1;
+      background: transparent;
+      & > .buttons > button {
+        width: auto;
+      }
+    }
     position: relative;
     &.supervisor {
       font-weight: bold;

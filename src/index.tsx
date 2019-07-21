@@ -160,8 +160,25 @@ class Plan extends React.Component<{}, {}> {
   }
 
   workslotContentDecision(t: number, l: number) {
-    if (app.closedWorkslots.some(slot => slot[0] === t && slot[1] === l)) {
-      return <b>-</b>;
+    if (app.workslotClosed(t, l)) {
+      const button = (
+        <button
+          onClick={e => {
+            app.openWorkslot(t, l);
+            e.stopPropagation();
+          }}
+        >
+          Åben
+        </button>
+      );
+      return (
+        <div className={styles.workslotWorkerList}>
+          <div className={styles.emptyWorkslotButtons}>
+            <b>-</b>
+            <div className={styles.buttons}>{button}</div>
+          </div>
+        </div>
+      );
     } else return this.listWorkers(t, l);
   }
 
@@ -189,6 +206,23 @@ class Plan extends React.Component<{}, {}> {
         }
       });
     });
+    if (!workersList.length) {
+      const button = (
+        <button
+          onClick={e => {
+            app.closeWorkslot(t, l);
+            e.stopPropagation();
+          }}
+        >
+          Luk
+        </button>
+      );
+      workersList.push(
+        <div className={styles.emptyWorkslotButtons}>
+          <div className={styles.buttons}>{button}</div>
+        </div>
+      );
+    }
     return <div className={styles.workslotWorkerList}>{workersList}</div>;
   }
 }
