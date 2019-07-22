@@ -1,13 +1,13 @@
-import { action, configure } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action, configure } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import { planGenerator } from "./generator";
-import styles from "./index.scss";
-import { keyHandler } from "./keyhandler";
-import { classNames } from "./util";
+import { app } from './app';
+import { planGenerator } from './generator';
+import styles from './index.scss';
+import { keyHandler } from './keyhandler';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -54,9 +54,26 @@ class AppComponent extends React.Component<{}, {}> {
           <button onClick={_e => planGenerator.generatePlan()}>
             Generer Barplan
           </button>
+          <button onClick={_e => this.downloadCSV()}>
+            Download as CSV
+          </button>
         </div>
       </div>
     );
+  }
+
+  downloadCSV(): void {
+    let a = document.createElement('a')
+    let fileContents = "Hello world!";
+    let filename = "hello.csv";
+    let filetype = "text/plain";
+    let dataURI = "data:" + filetype + ";base64," + btoa(fileContents);
+    a.href = dataURI;
+    a['download'] = filename
+
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   @action

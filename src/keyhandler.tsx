@@ -5,8 +5,6 @@ import { app } from './app';
 class KeyHandler {
   @action
   onKeyPress(key: string) {
-    //console.log(key)
-    //console.log(app.focusPlanCoordinates)
     switch (key) {
       case "h": {
         // plan move left
