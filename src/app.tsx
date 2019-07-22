@@ -153,7 +153,10 @@ class App {
   @action
   closeWorkslot(t: number, l: number) {
     if (!app.closedWorkslots.some(([tt, ll]) => tt == t && ll == l)) {
-      app.closedWorkslots.push([t, l]);
+      for (let i = 0; i < this.persons.length; i++) {
+        this.removePerson(i, t, l);
+      }
+      this.closedWorkslots.push([t, l]);
     }
   }
 
