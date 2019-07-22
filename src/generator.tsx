@@ -24,7 +24,11 @@ class PlanGenrator {
 
   @action
   fillSlot(time: number, location: number, amount: number) {
-    let workers = 0;
+    let workers = app.personsWorkslots.filter((_, i) =>
+      app.personsWorkslots[i].some(
+        slot => slot[0] === time && slot[1] === location
+      )
+    ).length;
     while (workers < amount) {
       const randNum = Math.floor(Math.random() * app.persons.length);
       if (!app.personsWorkslots[randNum].some(slot => slot[0] == time)) {
