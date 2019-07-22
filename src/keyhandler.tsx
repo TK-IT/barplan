@@ -1,6 +1,6 @@
-import { action } from "mobx";
+import { action } from 'mobx';
 
-import { app } from "./app";
+import { app } from './app';
 
 class KeyHandler {
   @action
@@ -62,10 +62,12 @@ class KeyHandler {
       }
       case "a": {
         // Add person in focus to workslot in focus
+        app.addPersonInFocusToSlot()
         break;
       }
       case "r": {
         // Remove person in focus to workslot in focus
+        app.removePersonInFocusFromSlot()
         break;
       }
     }
