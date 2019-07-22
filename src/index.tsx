@@ -7,7 +7,7 @@ import { app } from './app';
 import { planGenerator } from './generator';
 import styles from './index.scss';
 import { keyHandler } from './keyhandler';
-import { classNames, mapStringList } from './util';
+import { classNames } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -83,7 +83,7 @@ class AppComponent extends React.Component<{}, {}> {
       rows += location + "\t";
     }
     rows += "\n";
-    for (const [time, t] of mapStringList(app.timeNames)) {
+    for (const [t, time] of app.timeNames.entries()) {
       rows += time + "\t";
       for (let l = 0; l < app.locationNames.length; l++) {
         let supervisor = app.supervisorExsist(t, l);
