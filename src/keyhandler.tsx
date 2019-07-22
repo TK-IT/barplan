@@ -40,6 +40,34 @@ class KeyHandler {
           app.focusPlanCoordinates[1] += 1;
         break;
       }
+      case "w": {
+        // personlist move up
+        if (app.focusPersonIndex === null) app.focusPersonIndex = 0;
+        else
+          app.focusPersonIndex =
+            app.focusPersonIndex === 0
+              ? app.persons.length - 1
+              : app.focusPersonIndex - 1;
+        break;
+      }
+      case "s": {
+        // personlist move down
+        if (app.focusPersonIndex === null) app.focusPersonIndex = 0;
+        else
+          app.focusPersonIndex =
+            app.focusPersonIndex === app.persons.length - 1
+              ? 0
+              : app.focusPersonIndex + 1;
+        break;
+      }
+      case "a": {
+        // Add person in focus to workslot in focus
+        break;
+      }
+      case "r": {
+        // Remove person in focus to workslot in focus
+        break;
+      }
     }
   }
 }
