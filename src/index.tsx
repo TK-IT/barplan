@@ -1,13 +1,13 @@
-import { action, configure } from "mobx";
-import { observer } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { action, configure } from 'mobx';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { app } from "./app";
-import { planGenerator } from "./generator";
-import styles from "./index.scss";
-import { keyHandler } from "./keyhandler";
-import { classNames, mapStringList } from "./util";
+import { app } from './app';
+import { planGenerator } from './generator';
+import styles from './index.scss';
+import { keyHandler } from './keyhandler';
+import { classNames, mapStringList } from './util';
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -91,7 +91,7 @@ class AppComponent extends React.Component<{}, {}> {
           .map((_, i) => i)
           .filter(i => app.isPersonInSlot(i, t, l));
         if (supervisor !== null) {
-          rows += app.persons[supervisor] + " ";
+          rows += "["+app.persons[supervisor]+"]" + " ";
           workers = workers.filter(i => i !== supervisor);
         }
         for (const i of workers) {
