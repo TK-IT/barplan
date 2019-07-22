@@ -140,6 +140,17 @@ class App {
   }
 
   @action
+  supervisorExsist(time: number, location: number) {
+    for (let i = 0; i < this.persons.length; i++) {
+      for (const slot of this.personsWorkslots[i]) {
+        if (slot[0] === time && slot[1] === location && slot[2] === true)
+          return i;
+      }
+    }
+    return null;
+  }
+
+  @action
   closeWorkslot(t: number, l: number) {
     if (!app.closedWorkslots.some(([tt, ll]) => tt == t && ll == l)) {
       app.closedWorkslots.push([t, l]);

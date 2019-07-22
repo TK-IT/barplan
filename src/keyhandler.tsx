@@ -1,6 +1,6 @@
-import { action } from 'mobx';
+import { action } from "mobx";
 
-import { app } from './app';
+import { app } from "./app";
 
 class KeyHandler {
   @action
@@ -62,12 +62,28 @@ class KeyHandler {
       }
       case "a": {
         // Add person in focus to workslot in focus
-        app.addPersonInFocusToSlot()
+        app.addPersonInFocusToSlot();
         break;
       }
       case "r": {
         // Remove person in focus to workslot in focus
-        app.removePersonInFocusFromSlot()
+        app.removePersonInFocusFromSlot();
+        break;
+      }
+      case "e": {
+        if (
+          app.focusPersonIndex !== null &&
+          app.focusPlanCoordinates !== null
+        ) {
+          const [t, l] = app.focusPlanCoordinates;
+          const i = app.focusPersonIndex;
+          const supervisorIndex = app.supervisorExsist(t, l);
+          if (supervisorIndex === null) {
+            app.addAsSupervisor(i, t, l);
+          } else if (supervisorIndex === i) {
+            app.removeAsSupervisor(i, t, l);
+          }
+        }
         break;
       }
     }
