@@ -6,12 +6,12 @@ export function classNames(classes: { [className: string]: any }) {
   return classNames.join(" ");
 }
 
-export function mapStringList(list: string[]) : [string, number][] {
-  let result: [string, number][] = []
+export function mapStringList(list: string[]): [string, number][] {
+  let result: [string, number][] = [];
   let index = 0;
   for (const item of list) {
     result.push([item, index]);
-    index++
+    index++;
   }
   return result;
 }

@@ -1,6 +1,6 @@
-import { action } from 'mobx';
+import { action } from "mobx";
 
-import { app } from './app';
+import { app } from "./app";
 
 class KeyHandler {
   @action
@@ -87,11 +87,15 @@ class KeyHandler {
       case "c": {
         // Close or reopen workslot
         if (app.focusPlanCoordinates !== null) {
-          const [t,l] = app.focusPlanCoordinates;
-          if (app.closedWorkslots.some((coords) => coords[0]===t && coords[1]===l)) {
-            app.openWorkslot(t,l);
+          const [t, l] = app.focusPlanCoordinates;
+          if (
+            app.closedWorkslots.some(
+              coords => coords[0] === t && coords[1] === l
+            )
+          ) {
+            app.openWorkslot(t, l);
           } else {
-            app.closeWorkslot(t,l);
+            app.closeWorkslot(t, l);
           }
         }
         break;

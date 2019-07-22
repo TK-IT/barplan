@@ -1,13 +1,13 @@
-import { action, configure } from 'mobx';
-import { observer } from 'mobx-react';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { action, configure } from "mobx";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { app } from './app';
-import { planGenerator } from './generator';
-import styles from './index.scss';
-import { keyHandler } from './keyhandler';
-import { classNames } from './util';
+import { app } from "./app";
+import { planGenerator } from "./generator";
+import styles from "./index.scss";
+import { keyHandler } from "./keyhandler";
+import { classNames, mapStringList } from "./util";
 
 @observer
 class AppComponent extends React.Component<{}, {}> {
@@ -54,26 +54,54 @@ class AppComponent extends React.Component<{}, {}> {
           <button onClick={_e => planGenerator.generatePlan()}>
             Generer Barplan
           </button>
-          <button onClick={_e => this.downloadCSV()}>
-            Download as CSV
-          </button>
+          <button onClick={_e => this.downloadCSV()}>Download as CSV</button>
         </div>
       </div>
     );
   }
 
   downloadCSV(): void {
-    let a = document.createElement('a')
-    let fileContents = "Hello world!";
-    let filename = "hello.csv";
-    let filetype = "text/plain";
-    let dataURI = "data:" + filetype + ";base64," + btoa(fileContents);
+    let a = document.createElement("a");
+    let fileContents = this.parsePlanToCSVString();
+    /*  
+        There can be some encoding problems in the conversion from unicode
+        to base64. A possible solution to the problem can be found at:
+        https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa
+    */
+    let dataURI = "data:text/plain; base64," + btoa(fileContents);
     a.href = dataURI;
-    a['download'] = filename
+    a["download"] = "plan.csv";
 
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  parsePlanToCSVString() {
+    let rows = "\t";
+    for (const location of app.locationNames) {
+      rows += location + "\t";
+    }
+    rows += "\n";
+    for (const [time, t] of mapStringList(app.timeNames)) {
+      rows += time + "\t";
+      for (let l = 0; l < app.locationNames.length; l++) {
+        let supervisor = app.supervisorExsist(t, l);
+        let workers = app.persons
+          .map((_, i) => i)
+          .filter(i => app.isPersonInSlot(i, t, l));
+        if (supervisor !== null) {
+          rows += app.persons[supervisor] + " ";
+          workers = workers.filter(i => i !== supervisor);
+        }
+        for (const i of workers) {
+          rows += app.persons[i] + " ";
+        }
+        rows += "\t";
+      }
+      rows += "\n";
+    }
+    return rows;
   }
 
   @action
