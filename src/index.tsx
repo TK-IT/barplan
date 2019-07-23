@@ -347,19 +347,26 @@ class PersonWorkslot extends React.Component<PersonWorkslotProps, {}> {
 @observer
 class ControlPanel extends React.Component<{}, {}> {
   render() {
+    return (
+      <>
+        <div>
+          {this.heading()}
+          {this.buttons()}
+        </div>
+        <div>{keyHandler.shortcutHelp()}</div>
+      </>
+    );
+  }
+
+  heading() {
     if (app.focusPlanCoordinates == null) {
       return "";
     }
     const [t, l] = app.focusPlanCoordinates;
     return (
-      <>
-        <div>
-          <b>
-            {app.locationNames[l]} kl. {app.timeNames[t]}
-          </b>
-        </div>
-        {this.buttons()}
-      </>
+      <b>
+        {app.locationNames[l]} kl. {app.timeNames[t]}
+      </b>
     );
   }
 

@@ -3,6 +3,10 @@ import { action } from "mobx";
 import { app } from "./app";
 
 class KeyHandler {
+  shortcutHelp() {
+    return "";
+  }
+
   @action
   onKeyPress(key: string) {
     switch (key) {
