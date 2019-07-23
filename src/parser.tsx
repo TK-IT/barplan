@@ -2,7 +2,10 @@ import { app } from "./app";
 
 class Parser {
   parsePlanToLaTeXString() {
-    let latexContent = "\\textbf{Tid.}";
+    let latexContent =
+      "\\centering\n\\hspace*{-1.5cm}\\begin{tabular}{l|" +
+      "c".repeat(app.locationNames.length) +
+      "l}\n\\toprule\n\\textbf{Tid.}";
     for (const location of app.locationNames) {
       latexContent += " & \\textbf{" + location + "}";
     }
@@ -17,11 +20,14 @@ class Parser {
             .map((_, i) => i)
             .filter(i => app.isPersonInSlot(i, t, l));
           if (supervisor !== null) {
-            latexContent += "\\textbf{" + app.persons[supervisor] + "} ";
+            latexContent +=
+              "\\textbf{" +
+              this.checkForSpecialNameing(app.persons[supervisor]) +
+              "} ";
             workers = workers.filter(i => i !== supervisor);
           }
           for (const i of workers) {
-            latexContent += app.persons[i] + " ";
+            latexContent += this.checkForSpecialNameing(app.persons[i]) + " ";
           }
         } else {
           latexContent += " -- ";
@@ -29,7 +35,16 @@ class Parser {
       }
       latexContent += "\\\\\n";
     }
+    latexContent += "\\bottomrule\n\\end{tabular}";
     return latexContent;
+  }
+
+  checkForSpecialNameing(name: string): string {
+    name = name.replace("KASS", "\\KASS");
+    name = name.replace("KA$$", "\\KASS");
+    name = name.replace("VC", "\\VC");
+    name = name.replace("CERM", "\\CERM");
+    return name;
   }
 
   parsePlanToCSVString() {
