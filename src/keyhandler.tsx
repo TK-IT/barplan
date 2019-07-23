@@ -1,10 +1,45 @@
 import { action } from "mobx";
+import * as React from "react";
 
 import { app } from "./app";
+import styles from "./index.scss";
 
 class KeyHandler {
+  // NB! Update shortcutHelp if shortcuts are changed
   shortcutHelp() {
-    return "";
+    return (
+      <div className={styles.shortcutHelp}>
+        <h2>Genvejstaster:</h2>
+        <b>Plan navigation:</b>
+        <p>
+          h: Venstre
+          <br />
+          j: Ned
+          <br />
+          k: Op
+          <br />
+          j: Højre
+        </p>
+        <b>Personliste navigation:</b>
+        <p>
+          w: Op
+          <br />
+          s: Ned
+          <br />
+        </p>
+        <b>Handlinger:</b>
+        <p>
+          a: Tilføj til vagt
+          <br />
+          r: Fjern fra vagt
+          <br />
+          e: Gør ansvarlig/uansvarlig
+          <br />
+          c: Luk/åben vagt
+          <br />
+        </p>
+      </div>
+    );
   }
 
   @action
