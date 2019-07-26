@@ -87,4 +87,8 @@ td {
 .shortcutHelp {
   color: gray;
   font-size-adjust: 0.39;
+  & ul {
+    list-style: none;
+    padding: 0;
+  }
 }
