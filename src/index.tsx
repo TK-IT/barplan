@@ -65,25 +65,25 @@ class AppComponent extends React.Component<{}, {}> {
   }
 
   downloadLaTeX(): void {
-    let fileContents = parser.parsePlanToLaTeXString();
-    let fileName = "plan_data.tex";
+    const fileContents = parser.parsePlanToLaTeXString();
+    const fileName = "plan_data.tex";
     this.downloadFile(fileContents, fileName);
   }
 
   downloadCSV(): void {
-    let fileContents = parser.parsePlanToCSVString();
-    let fileName = "plan.csv";
+    const fileContents = parser.parsePlanToCSVString();
+    const fileName = "plan.csv";
     this.downloadFile(fileContents, fileName);
   }
 
   downloadFile(fileContent: string, fileName: string) {
-    let a = document.createElement("a");
+    const a = document.createElement("a");
     /*  
         There can be some encoding problems in the conversion from unicode
         to base64. A possible solution to the problem can be found at:
         https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa
     */
-    let dataURI = "data:text/plain; base64," + btoa(fileContent);
+    const dataURI = "data:text/plain; base64," + btoa(fileContent);
     a.href = dataURI;
     a["download"] = fileName;
 
