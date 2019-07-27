@@ -2,44 +2,50 @@ import { app } from "./app";
 
 class Parser {
   parsePlanToLaTeXString() {
-    let latexContent =
-      "\\centering\n\\hspace*{-1.5cm}\\begin{tabular}{l|" +
-      "c".repeat(app.locationNames.length) +
-      "l}\n\\toprule\n\\textbf{Tid.}";
-    for (const location of app.locationNames) {
-      latexContent += " & \\textbf{" + location + "}";
-    }
-    latexContent += "\\\\\n\\midrule\n";
+    const columnSpecification = "c".repeat(app.locationNames.length);
+    const headerRow = app.locationNames.map(
+      location => `\\textbf{${location}}`
+    );
+    const header = `\\centering
+\\hspace*{-1.5cm}\\begin{tabular}{l|${columnSpecification}l}
+\\toprule
+\\textbf{Tid.} & ${headerRow.join(" & ")}\\\\
+\\midrule`;
+    const rows = [];
     for (const [t, time] of app.timeNames.entries()) {
-      latexContent += time;
+      const cells = [];
       for (let l = 0; l < app.locationNames.length; l++) {
-        latexContent += " & ";
         if (!app.workslotClosed(t, l)) {
-          let supervisor = app.supervisorExists(t, l);
+          const supervisor = app.supervisorExists(t, l);
           let workers = app.persons
             .map((_, i) => i)
             .filter(i => app.isPersonInSlot(i, t, l));
+          const people = [];
           if (supervisor !== null) {
-            latexContent +=
+            people.push(
               "\\textbf{" +
-              this.checkForSpecialNameing(app.persons[supervisor]) +
-              "} ";
+                this.checkForSpecialNaming(app.persons[supervisor]) +
+                "}"
+            );
             workers = workers.filter(i => i !== supervisor);
           }
-          for (const i of workers) {
-            latexContent += this.checkForSpecialNameing(app.persons[i]) + " ";
-          }
+          people.push(
+            ...workers.map(i => this.checkForSpecialNaming(app.persons[i]))
+          );
+          cells.push(people.join(" "));
         } else {
-          latexContent += " -- ";
+          cells.push(" -- ");
         }
       }
-      latexContent += "\\\\\n";
+      rows.push(`${time} & ${cells.join(" & ")}\\\\`);
     }
-    latexContent += "\\bottomrule\n\\end{tabular}";
-    return latexContent;
+    return `${header}
+${rows.join("\n")}
+\\bottomrule
+\\end{tabular}`;
   }
 
-  checkForSpecialNameing(name: string): string {
+  checkForSpecialNaming(name: string): string {
     name = name.replace("KASS", "\\KASS");
     name = name.replace("KA$$", "\\KASS");
     name = name.replace("VC", "\\VC");
