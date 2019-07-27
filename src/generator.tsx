@@ -4,7 +4,7 @@ import { app } from "./app";
 
 const best = ["SEKR", "PR", "FORM", "NF", "INKA", "KA$$", "KASS", "CERM", "VC"];
 
-class PlanGenrator {
+class PlanGenerator {
   @action
   generatePlan() {
     for (let t = 0; t < app.timeNames.length; t++) {
@@ -56,4 +56,4 @@ class PlanGenrator {
     return name.match("FU..") && name.length === 4;
   }
 }
-export const planGenerator = new PlanGenrator();
+export const planGenerator = new PlanGenerator();
