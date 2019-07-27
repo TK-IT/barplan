@@ -15,7 +15,7 @@ class Parser {
       for (let l = 0; l < app.locationNames.length; l++) {
         latexContent += " & ";
         if (!app.workslotClosed(t, l)) {
-          let supervisor = app.supervisorExsist(t, l);
+          let supervisor = app.supervisorExists(t, l);
           let workers = app.persons
             .map((_, i) => i)
             .filter(i => app.isPersonInSlot(i, t, l));
@@ -56,7 +56,7 @@ class Parser {
     for (const [t, time] of app.timeNames.entries()) {
       rows += time + "\t";
       for (let l = 0; l < app.locationNames.length; l++) {
-        let supervisor = app.supervisorExsist(t, l);
+        let supervisor = app.supervisorExists(t, l);
         let workers = app.persons
           .map((_, i) => i)
           .filter(i => app.isPersonInSlot(i, t, l));

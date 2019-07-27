@@ -102,7 +102,7 @@ const actions: { [key: string]: KeyAction } = {
       if (app.focusPersonIndex !== null && app.focusPlanCoordinates !== null) {
         const [t, l] = app.focusPlanCoordinates;
         const i = app.focusPersonIndex;
-        const supervisorIndex = app.supervisorExsist(t, l);
+        const supervisorIndex = app.supervisorExists(t, l);
         if (supervisorIndex === null) {
           app.addAsSupervisor(i, t, l);
         } else if (supervisorIndex === i) {
