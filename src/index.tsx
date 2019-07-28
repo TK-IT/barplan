@@ -107,7 +107,9 @@ class AppComponent extends React.Component<{}, {}> {
     app.persons = rows
       .map(row => row.split("\t")[0].trim())
       .filter(name => name != "");
-    app.persons.forEach(_person => app.personsWorkslots.push([]));
+    while (app.personsWorkslots.length < app.persons.length) {
+      app.personsWorkslots.push([]);
+    }
   }
 }
 
